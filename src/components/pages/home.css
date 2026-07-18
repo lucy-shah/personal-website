@@ -1,0 +1,304 @@
+.landing {
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  position: relative;
+  padding: 2rem;
+  background-color: #A0AEBC;
+}
+
+/* Doodles */
+.doodle {
+  position: absolute;
+  font-family: 'Caveat', cursive;
+  font-size: 2rem;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.doodle-star { left: 5%; top: 12%; }
+.doodle-sparkle { left: 45%; top: 8%; font-size: 1.7rem; opacity: 0.3; transform: rotate(10deg); }
+.doodle-heart { left: 88%; top: 15%; font-size: 1.8rem; opacity: 0.35; transform: rotate(-15deg); }
+.doodle-flower-text { left: 8%; top: 75%; font-size: 2.2rem; transform: rotate(20deg); }
+.doodle-cloud { left: 85%; top: 68%; font-size: 1.9rem; opacity: 0.35; }
+.doodle-wave { left: 92%; top: 82%; opacity: 0.35; }
+
+/* Pressed flower */
+.pressed-flower {
+  position: absolute;
+  left: 3%;
+  top: 8%;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+/* Photo strip - film negative style */
+.photo-strip {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  width: 100px;
+  height: 420px;
+  background: #2a2520;
+  padding: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transform: rotate(-3deg);
+  z-index: 2;
+}
+
+/* Film perforations */
+.film-perf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 8px,
+    rgba(0,0,0,0.8) 8px,
+    rgba(0,0,0,0.8) 12px
+  );
+}
+
+.film-perf-left { left: 4px; }
+.film-perf-right { right: 4px; }
+
+.film-photo {
+  width: 100%;
+  height: 85px;
+  background: linear-gradient(135deg, #d4b896 0%, #a68a64 100%);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.film-photo:last-child {
+  margin-bottom: 0;
+}
+
+.film-emoji {
+  font-size: 2rem;
+}
+
+.film-label {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  font-size: 0.55rem;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 2px 4px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Polaroid with green washi tape */
+.polaroid-main {
+  position: absolute;
+  left: 55%;
+  top: 30%;
+  background: white;
+  padding: 18px 18px 55px 18px;
+  width: 330px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transform: rotate(10deg);
+  z-index: 3;
+}
+
+/* Green washi tape */
+.polaroid-main::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: 40px;
+  width: 90px;
+  height: 32px;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(122,155,118,0.7),
+    rgba(122,155,118,0.7) 8px,
+    rgba(255,255,255,0.3) 8px,
+    rgba(255,255,255,0.3) 16px
+  );
+  border: 1px solid rgba(0,0,0,0.08);
+  transform: rotate(-10deg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(135deg, #d4b896 0%, #a68a64 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4.5rem;
+}
+
+.polaroid-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Prevents stretching and crops it into a nice square */
+}
+
+.polaroid-caption {
+  font-family: 'Caveat', cursive;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1.05rem;
+  color: #6b5d4f;
+}
+
+/* Green sticky note */
+.sticky-status {
+  position: absolute;
+  left: 41%;
+  top: 12%;
+  background: #c8e6c9;
+  padding: 1.25rem;
+  width: 210px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  transform: rotate(-4deg);
+  font-family: 'Caveat', cursive;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  z-index: 4;
+}
+
+.sticky-status::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: rgba(0,0,0,0.03);
+}
+
+.sticky-status strong {
+  font-size: 1.15rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* Notebook paper with ripped edges and ruled lines */
+.text-content {
+  position: absolute;
+  left: 10%;
+  top: 28%;
+  background: #fdfbf5;
+  padding: 2.5rem;
+  width: 480px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  transform: rotate(0.5deg);
+  z-index: 2;
+  clip-path: polygon(
+    0 8px, 2% 3px, 4% 7px, 6% 2px, 8% 6px, 10% 3px, 12% 7px, 14% 4px,
+    16% 8px, 18% 3px, 20% 7px, 22% 4px, 24% 8px, 26% 2px, 28% 6px, 30% 3px,
+    32% 7px, 34% 4px, 36% 8px, 38% 2px, 40% 6px, 42% 3px, 44% 7px, 46% 4px,
+    48% 8px, 50% 3px, 52% 7px, 54% 4px, 56% 8px, 58% 2px, 60% 6px, 62% 3px,
+    64% 7px, 66% 4px, 68% 8px, 70% 2px, 72% 6px, 74% 3px, 76% 7px, 78% 4px,
+    80% 8px, 82% 3px, 84% 7px, 86% 4px, 88% 8px, 90% 2px, 92% 6px, 94% 3px,
+    96% 7px, 98% 4px, 100% 8px,
+    100% 100%, 0 100%
+  );
+}
+
+/* Red margin line on notebook */
+.text-content::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(232,180,168,0.3);
+  z-index: 0;
+}
+
+/* Ruled lines on notebook */
+.text-content::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 23px,
+    rgba(122,155,118,0.15) 23px,
+    rgba(122,155,118,0.15) 24px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.text-title {
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+  color: #3a3226;
+  position: relative;
+  z-index: 1;
+}
+
+.text-bio {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #6b5d4f;
+  margin-bottom: 0.85rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Greeting tag - rotated and overlaying */
+.greeting-tag {
+  position: absolute;
+  left: 8%;
+  top: 27%;
+  background: #fdfbf5;
+  padding: 0.75rem 1.25rem;
+  font-family: 'Handlee', cursive;
+  font-size: 1.25rem;
+  color: #6b5d4f;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  transform: rotate(-8deg);
+  z-index: 10;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .polaroid-main,
+  .sticky-status,
+  .text-content,
+  .greeting-tag,
+  .photo-strip {
+    position: relative;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 2rem auto;
+    transform: rotate(0deg);
+  }
+  
+  .text-content,
+  .polaroid-main {
+    width: 100%;
+    max-width: 480px;
+  }
+  
+  .photo-strip {
+    width: 100px;
+    height: 420px;
+  }
+  
+  .doodle {
+    display: none;
+  }
+  
+  .pressed-flower {
+    display: none;
+  }
+}

@@ -25,29 +25,6 @@ function Home() {
         </svg>
       </div>
 
-      {/* Photo strip with projects */}
-      <div className="photo-strip">
-        <div className="film-perf film-perf-left"></div>
-        <div className="film-perf film-perf-right"></div>
-        
-        <div className="film-photo">
-          <span className="film-emoji">💻</span>
-          <span className="film-label">Web</span>
-        </div>
-        <div className="film-photo">
-          <span className="film-emoji">🏎️</span>
-          <span className="film-label">NER</span>
-        </div>
-        <div className="film-photo">
-          <span className="film-emoji">🎤</span>
-          <span className="film-label">Debate</span>
-        </div>
-        <div className="film-photo">
-          <span className="film-emoji">⚡</span>
-          <span className="film-label">PCB</span>
-        </div>
-      </div>
-
       {/* Polaroid with green washi tape */}
       <div className="polaroid-main">
         <div className="polaroid-img">
