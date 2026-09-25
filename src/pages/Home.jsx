@@ -99,9 +99,9 @@ function Home() {
       <section className="inspiration-preview" aria-labelledby="inspiration-preview-title">
         <p className="section-label">OPEN TABS IN MY BRAIN</p>
         <div className="inspiration-preview-copy">
-          <h2 id="inspiration-preview-title">Things that<br /><em>stay with me.</em></h2>
-          <p>People, work, flowers, photobooths, and ideas I keep coming back to.</p>
-          <Link className="section-more-link" to="/inspiration">Wander through my inspiration page <span aria-hidden="true">↗</span></Link>
+          <h2 id="inspiration-preview-title">Things that<br /><em>I'm still thinking about</em></h2>
+          <p>People, work, media, and ideas I keep coming back to.</p>
+          <Link className="section-more-link" to="/inspiration">Wander through my inspiration page <span aria-hidden="true"></span></Link>
         </div>
         <span className="inspiration-preview-flower" aria-hidden="true">✿</span>
         <span className="inspiration-preview-spark" aria-hidden="true">◇</span>
@@ -109,8 +109,8 @@ function Home() {
 
       <section className="contact-preview" id="contact" aria-labelledby="contact-title">
         <p className="section-label">SAY HELLO</p>
-        <h2 id="contact-title">Have something<br />interesting in mind?</h2>
-        <p>For conversations, questions, and things to figure out together.</p>
+        <h2 id="contact-title">Want to <br />contact me?</h2>
+        <p>For chats, inquiries, and more</p>
         <Link className="section-more-link" to="/contact">Find me over here <span aria-hidden="true"></span></Link>
       </section>
     </main>
