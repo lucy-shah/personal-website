@@ -124,7 +124,7 @@
 .about-preview-copy h2 em,.inspiration-preview-copy h2 em { color: var(--pink); font-weight: 400; }
 .about-preview-copy > p:not(.about-signoff) { max-width: 660px; margin: 23px 0 0; color: var(--cream-dim); font: 400 clamp(1.15rem, 1.5vw, 1.35rem)/1.58 'Crimson Pro', serif; }
 .about-signoff { margin: 18px 0 0; color: var(--gold); font: 32px 'Ms Madi', cursive; }
-.about-preview .about-photo-placeholder { width: min(100%, 265px); }
+.about-preview .about-photo-home { width: min(100%, 340px); aspect-ratio: .76; justify-self: center; }
 .about-preview-flower { position: absolute; top: 13%; right: 5%; color: var(--lilac); font-size: 37px; transform: rotate(-17deg); }
 .section-more-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 24px; padding-bottom: 6px; border-bottom: 1px solid var(--link-accent, var(--pink)); color: var(--cream); font: 500 .68rem 'Fira Sans', sans-serif; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; }
 .section-more-link span { color: var(--link-accent, var(--pink)); transition: transform .2s ease; }
@@ -260,7 +260,7 @@
   .hero { min-height: 620px; gap: 5vw; padding: 65px 7vw 78px; }
   .hero h1 { font-size: clamp(3.4rem, 8.5vw, 5.4rem); }
   .about-story,.about-preview { grid-template-columns: minmax(0, 1fr) minmax(190px, .55fr); gap: 24px 6vw; padding-inline: 9vw; }
-  .about-photo-placeholder { width: min(100%, 230px); }
+  .about-preview .about-photo-home { width: min(100%, 290px); }
   .reference-section { grid-template-columns: 1fr; gap: 28px; }
   .work-preview { padding-inline: 9vw; }
   .inspiration-preview,.resume-preview,.contact-preview { padding-inline: 9vw; }
@@ -285,7 +285,7 @@
   .destination-link { min-width: 0; flex: 1; gap: 8px; padding: 12px 11px; font-size: .6rem; }
   .about-preview { grid-template-columns: 1fr; gap: 22px; min-height: 0; padding: 72px 9vw; }
   .about-preview-label { margin-bottom: 0; }
-  .about-preview .about-photo-placeholder { width: min(70vw, 230px); justify-self: center; }
+  .about-preview .about-photo-home { width: min(70vw, 260px); }
   .about-preview-copy h2 { font-size: 2.7rem; }
   .about-preview-copy > p:not(.about-signoff) { font-size: 1.1rem; }
   .work-preview { padding: 74px 8vw 85px; }
@@ -313,7 +313,7 @@
   .project-detail-art { width: min(100%, 280px); min-height: 265px; justify-self: center; }
   .project-detail-copy h2 { font-size: 2.5rem; }
   .about-story { grid-template-columns: 1fr; gap: 29px; padding: 56px 9vw 74px; }
-  .about-photo-home { width: min(100vw, 230px); justify-self: center; }
+  .about-photo-home { width: min(70vw, 260px); justify-self: center; }
   .about-flower { top: 3%; right: 8%; }
   .inspiration-hero { padding: 76px 9vw 68px; }
   .inspiration-hero h1 { font-size: clamp(3.4rem, 16vw, 5.6rem); }

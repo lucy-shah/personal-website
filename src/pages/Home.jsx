@@ -52,7 +52,7 @@ function Home() {
             the different ways data analytics and machine learning can be used to solve different sets of problems. 
             Currently I'm on search for a spring/summer (January-July) internship where I can work towards these goals. 
           </p>
-          <p className="about-signoff">Things i love: books, iced coffee, board games</p>
+          <p className="about-signoff">Things I love: books, iced coffee, board games</p>
           <Link className="section-more-link" to="/about">A little more about me <span aria-hidden="true"></span></Link>
         </div>
         <div className="about-photo-home" role="img" aria-label="personal photo for about">
