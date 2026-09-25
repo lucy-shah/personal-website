@@ -1,3 +1,5 @@
+import aboutMeIMG from "../assets/aboutMeIMG.png";
+
 function About() {
   return (
     <main className="content-page about-page">
@@ -23,9 +25,8 @@ function About() {
           </p>
           <span className="about-signoff">learning by making</span>
         </div>
-        <div className="about-photo-placeholder" role="img" aria-label="Placeholder for another personal photo">
-          <span className="placeholder-spark" aria-hidden="true">✧</span>
-          <span>another little<br />moment goes here</span>
+        <div className="about-photo" role="img" aria-label="Personal photo for about me">
+          <img className="about-photo" src={aboutMeIMG} alt="Lucy" />
         </div>
         <span className="about-flower" aria-hidden="true">✿</span>
       </section>
