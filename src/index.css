@@ -1,13 +1,33 @@
-* {
-  box-sizing: border-box;
+:root {
+  font-family: 'Fira Sans', sans-serif;
+  color: #f2eee4;
+  background: #1a2421;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  --pine: #1a2421;
+  --pine-soft: #2a3932;
+  --pine-light: #202d28;
+  --cream: #f2eee4;
+  --cream-dim: #d0d3c8;
+  --pink: #eca6bd;
+  --lilac: #c6b5d8;
+  --blue: #91b8c5;
+  --gold: #e6cb83;
+  --line-dark: rgb(242 238 228 / 18%);
 }
 
-body {
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; }
+html { min-width: 320px; scroll-padding-top: 88px; }
+body { min-width: 320px; min-height: 100vh; margin: 0; background: var(--pine); }
+body, button, a { font-family: 'Fira Sans', sans-serif; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+::selection { background: var(--pink); color: var(--pine); }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 
-html, body, #root {
-  width: 100%;
-  min-height: 100%;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
 }
