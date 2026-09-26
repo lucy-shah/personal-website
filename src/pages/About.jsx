@@ -6,7 +6,8 @@ function About() {
       <section className="page-intro about-intro" aria-labelledby="about-page-title">
         <p className="section-label">A GLIMPSE INTO MY WORLD </p>
         <h1 id="about-page-title">More about me <br /> <em></em></h1>
-        <p>I like learning by making, following a question, and finding the human side of how things work.</p>
+        <p> 
+        I like learning by making, following a question, and finding the human side of how things work.</p>
         <span className="page-spark" aria-hidden="true">✧</span>
       </section>
 
