@@ -4,8 +4,8 @@ function About() {
   return (
     <main className="content-page about-page">
       <section className="page-intro about-intro" aria-labelledby="about-page-title">
-        <p className="section-label">A LITTLE ABOUT ME</p>
-        <h1 id="about-page-title">Part problem solver,<br />part <em>“wait, that’s interesting.”</em></h1>
+        <p className="section-label">A GLIMPSE INTO MY WORLD </p>
+        <h1 id="about-page-title">More about me <br /> <em></em></h1>
         <p>I like learning by making, following a question, and finding the human side of how things work.</p>
         <span className="page-spark" aria-hidden="true">✧</span>
       </section>
@@ -13,17 +13,20 @@ function About() {
       <section className="about-story" aria-label="A little more about Lucy">
         <div className="about-story-copy">
           <p>
-            I’m studying computer science at Northeastern, where I get to explore
-            the place software meets the physical world. Lately that means firmware
-            with Northeastern Electric Racing; the rest of the time, it means
-            following a question until it turns into something worth making.
+            I’m a second year studying computer science and business administrsation with a concentration in finance at Northeastern University.
+            Recently, I've gotten involved in Forge, which is product development community where build and deploy a product throughout the entire product lifecycle. 
+            Within computer science, I am interested in data analytics and the different ways data can be used an mnanipulated to
+            solve problems. I've also been finding myself very interested in UI/UX design, because I think websites and app Ui's have
+            gotten so generic, and I miss when sites felt unique and visually interesting, while still being intutive and easy to use. 
+            As a result of this, I've been thinking a lot more about abuot how to integrate more creativity and design into the projects I create.
+            
           </p>
           <p>
-            I also like keeping a little archive of the people, images, and ideas
-            that stick with me. This site is where those parts of my life get to
-            sit next to the things I build.
+          Around Boston, you can usually find me trying out new coffee shops and bookstores. I grew up in southern california, so I'm
+          always looking for places to go outside for a beach day or a hike. I also love baking and cooking, which means I spend a lot of time in the kitchen trying
+          out new recipes. 
           </p>
-          <span className="about-signoff">learning by making</span>
+          <span className="about-signoff"> — Lucy</span>
         </div>
         <div className="about-photo" role="img" aria-label="Personal photo for about me">
           <img className="about-photo" src={aboutMeIMG} alt="Lucy" />

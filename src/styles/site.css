@@ -124,7 +124,7 @@
 .about-preview-copy h2 em,.inspiration-preview-copy h2 em { color: var(--pink); font-weight: 400; }
 .about-preview-copy > p:not(.about-signoff) { max-width: 660px; margin: 23px 0 0; color: var(--cream-dim); font: 400 clamp(1.15rem, 1.5vw, 1.35rem)/1.58 'Crimson Pro', serif; }
 .about-signoff { margin: 18px 0 0; color: var(--gold); font: 32px 'Ms Madi', cursive; }
-.about-preview .about-photo-home { width: min(100%, 340px); aspect-ratio: .76; justify-self: center; }
+.about-preview .about-photo-home { width: min(100%, 340px); aspect-ratio: .76; justify-self: center; transform: translateY(-28px); }
 .about-preview-flower { position: absolute; top: 13%; right: 5%; color: var(--lilac); font-size: 37px; transform: rotate(-17deg); }
 .section-more-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 24px; padding-bottom: 6px; border-bottom: 1px solid var(--link-accent, var(--pink)); color: var(--cream); font: 500 .68rem 'Fira Sans', sans-serif; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; }
 .section-more-link span { color: var(--link-accent, var(--pink)); transition: transform .2s ease; }
@@ -169,6 +169,7 @@
 .page-intro { position: relative; padding: clamp(5rem, 10vw, 9rem) max(14vw, calc((100vw - 1020px) / 2)) 74px; overflow: hidden; }
 .page-intro .section-label { position: relative; z-index: 1; color: var(--page-accent); }
 .page-intro h1 { position: relative; z-index: 1; max-width: 900px; margin: 22px 0 18px; color: var(--cream); font: 400 clamp(3.6rem, 8vw, 7rem)/.96 'Limelight', serif; }
+.about-intro h1 { max-width: none; font-size: clamp(2.8rem, 7.2vw, 6.4rem); }
 .page-intro h1 em { color: var(--page-accent); font-style: normal; }
 .page-intro > p:last-of-type { position: relative; z-index: 1; max-width: 510px; margin: 0; color: var(--cream-dim); font: 400 clamp(1.1rem, 1.6vw, 1.3rem)/1.5 'Crimson Pro', serif; }
 .page-spark { position: absolute; top: 30%; right: 15%; color: var(--pink); font-size: 53px; animation: drift 5s ease-in-out infinite; }
@@ -285,7 +286,7 @@
   .destination-link { min-width: 0; flex: 1; gap: 8px; padding: 12px 11px; font-size: .6rem; }
   .about-preview { grid-template-columns: 1fr; gap: 22px; min-height: 0; padding: 72px 9vw; }
   .about-preview-label { margin-bottom: 0; }
-  .about-preview .about-photo-home { width: min(70vw, 260px); }
+  .about-preview .about-photo-home { width: min(70vw, 260px); transform: none; }
   .about-preview-copy h2 { font-size: 2.7rem; }
   .about-preview-copy > p:not(.about-signoff) { font-size: 1.1rem; }
   .work-preview { padding: 74px 8vw 85px; }
@@ -303,6 +304,7 @@
   .contact-preview { padding: 68px 8vw 76px; }
   .page-intro { padding: 75px 9vw 58px; }
   .page-intro h1 { font-size: clamp(3.5rem, 16vw, 5.7rem); }
+  .about-intro h1 { font-size: clamp(2.1rem, 10vw, 4.4rem); }
   .page-spark { top: 18%; right: 8%; font-size: 38px; }
   .resume-document,.project-detail-list,.contact-details { width: calc(100% - 18vw); padding-bottom: 76px; }
   .resume-entry { grid-template-columns: 1fr auto; gap: 8px 16px; padding: 18px 0; }
