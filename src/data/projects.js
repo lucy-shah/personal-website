@@ -1,21 +1,36 @@
 const projects = [
   {
-    slug: 'northeastern-electric-racing',
-    title: 'Firmware with Northeastern Electric Racing',
-    detail: 'Embedded systems · Northeastern University',
-    description:
-      'I work on firmware with NER, exploring how software behaves when it meets the physical world.',
-    image: '/racecar.png',
-    imageAlt: 'Illustration of a race car',
-    accent: 'project-accent-blue',
+    slug: 'personal-portfolio',
+    title: 'Personal Portfolio',
+    detail: 'Personal project · Jun 2026–Present',
+    description: 'A multi-page portfolio for sharing my work, interests, and the ideas behind them.',
+    overview:
+      'I designed and built this site as a home for my projects and the things I’m curious about, with a visual style that feels personal while staying easy to explore.',
+    highlights: [
+      'Built with React and Vite, with dedicated pages for projects, résumé, about, inspiration, and contact.',
+      'Created responsive layouts, custom styling, and small animations throughout the site.',
+      'Set up GitHub Actions to build and deploy the site to GitHub Pages.',
+    ],
+    stack: 'React · Vite · JavaScript · CSS · GitHub Pages',
+    imagePlaceholder: 'Portfolio image coming soon',
+    link: 'https://lucy-shah.github.io/personal-website/',
+    accent: 'project-accent-pink',
   },
   {
-    slug: 'personal-website',
-    title: 'A little corner of the internet',
-    detail: 'Personal project · In progress',
-    description:
-      'A portfolio built to bring together my work, the things I think about, and the visual details that feel like me.',
-    accent: 'project-accent-pink',
+    slug: 'husky-club-quest',
+    title: 'Husky Club Quest',
+    detail: 'Data and software project · Jan–May 2026',
+    description: 'A searchable directory for discovering and rating Northeastern student organizations.',
+    overview:
+      'I built the data and backend foundation for a tool that helps Northeastern students find clubs that fit their interests.',
+    highlights: [
+      'Scraped and maintained a Supabase PostgreSQL database of 600+ student organizations.',
+      'Built FastAPI endpoints for club search, filtering, and student-submitted ratings.',
+      'Designed the database schema and SQL queries for club metadata and aggregated ratings.',
+    ],
+    stack: 'Python · FastAPI · PostgreSQL · Supabase · SQL',
+    imagePlaceholder: 'Husky Club Quest image coming soon',
+    accent: 'project-accent-blue',
   },
 ]
 

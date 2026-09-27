@@ -1,14 +1,10 @@
 import projects from '../data/projects.js'
 
-function ProjectArtwork({ project }) {
-  if (project.image) {
-    return <img src={project.image} alt={project.imageAlt} />
-  }
-
+function ProjectPlaceholder({ project }) {
   return (
-    <div className="project-artwork-note" aria-hidden="true">
-      <span>✿</span>
-      <small>a little corner<br />of the internet</small>
+    <div className="project-image-placeholder" role="img" aria-label={project.imagePlaceholder}>
+      <span aria-hidden="true">✧</span>
+      <p>{project.imagePlaceholder}</p>
     </div>
   )
 }
@@ -18,26 +14,40 @@ function Projects() {
     <main className="content-page projects-page">
       <section className="page-intro projects-intro" aria-labelledby="projects-page-title">
         <p className="section-label">THINGS I’VE BEEN MAKING</p>
-        <h1 id="projects-page-title">Curiosity,<br /><em>in progress.</em></h1>
-        <p>A growing collection of projects, experiments, and ideas I’m learning by making.</p>
+        <h1 id="projects-page-title">My projects</h1>
+        <p>A growing collection of projects I’ve built, and how they came together.</p>
         <span className="page-spark" aria-hidden="true">◇</span>
       </section>
 
-      <section className="project-detail-list" aria-label="Project details">
+      <section className="project-accordion-list" aria-label="Projects">
         {projects.map((project) => (
-          <article className={`project-detail-row ${project.accent}`} key={project.slug}>
-            <div className="project-detail-art">
-              <ProjectArtwork project={project} />
+          <details className={`project-accordion ${project.accent}`} key={project.slug}>
+            <summary className="project-accordion-summary">
+              <div>
+                <p className="project-detail">{project.detail}</p>
+                <h2>{project.title}</h2>
+                <p className="project-accordion-teaser">{project.description}</p>
+              </div>
+              <span className="project-accordion-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div className="project-accordion-body">
+              <ProjectPlaceholder project={project} />
+              <div className="project-accordion-content">
+                <p>{project.overview}</p>
+                <ul>
+                  {project.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+                </ul>
+                <p className="project-stack"><span>Built with</span> {project.stack}</p>
+                {project.link && (
+                  <a className="project-live-link" href={project.link} target="_blank" rel="noreferrer">
+                    View the homepage <span aria-hidden="true"></span>
+                  </a>
+                )}
+              </div>
             </div>
-            <div className="project-detail-copy">
-              <p className="project-detail">{project.detail}</p>
-              <h2>{project.title}</h2>
-              <p>{project.description}</p>
-            </div>
-            <span className="project-detail-mark" aria-hidden="true">✦</span>
-          </article>
+          </details>
         ))}
-        <p className="projects-signoff">More as they come together <span aria-hidden="true">✿</span></p>
+        <p className="projects-signoff">More coming soon... <span aria-hidden="true">✿</span></p>
       </section>
     </main>
   )
