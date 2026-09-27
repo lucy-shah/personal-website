@@ -68,8 +68,8 @@ function Resume() {
 
       <div className="resume-document">
         <div className="resume-contact-line">
-          <a href={`${import.meta.env.BASE_URL}Lucy-Shah-Resume.pdf`} download>
-            Download a copy of my résumé here <span aria-hidden="true"></span>
+          <a href={`${import.meta.env.BASE_URL}Lucy-Shah-Resume.pdf?v=2`} download>
+            Download a copy of my resume here <span aria-hidden="true"></span>
           </a>
         </div>
 

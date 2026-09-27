@@ -1,8 +1,16 @@
 import projects from '../data/projects.js'
 
-function ProjectPlaceholder({ project }) {
+function ProjectPreview({ project }) {
+  if (project.previewImage) {
+    return (
+      <figure className="project-image-display">
+        <img src={project.previewImage} alt={project.previewAlt} loading="lazy" />
+      </figure>
+    )
+  }
+
   return (
-    <div className="project-image-placeholder" role="img" aria-label={project.imagePlaceholder}>
+    <div className="project-image-placeholder" role="img" aria-label={project.imagePlaceholder || project.title}>
       <span aria-hidden="true">✧</span>
       <p>{project.imagePlaceholder}</p>
     </div>
@@ -28,10 +36,10 @@ function Projects() {
                 <h2>{project.title}</h2>
                 <p className="project-accordion-teaser">{project.description}</p>
               </div>
-              <span className="project-accordion-toggle" aria-hidden="true">+</span>
+              <span className="project-accordion-toggle" aria-hidden="true">✧</span>
             </summary>
             <div className="project-accordion-body">
-              <ProjectPlaceholder project={project} />
+              <ProjectPreview project={project} />
               <div className="project-accordion-content">
                 <p>{project.overview}</p>
                 <ul>
