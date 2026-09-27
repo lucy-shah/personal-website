@@ -171,14 +171,13 @@
 .page-intro h1 { position: relative; z-index: 1; max-width: 900px; margin: 22px 0 18px; color: var(--cream); font: 400 clamp(3.6rem, 8vw, 7rem)/.96 'Limelight', serif; }
 .about-intro h1 { max-width: none; font-size: clamp(2.8rem, 7.2vw, 6.4rem); }
 .page-intro h1 em { color: var(--page-accent); font-style: normal; }
-.page-intro > p:last-of-type { position: relative; z-index: 1; max-width: 510px; margin: 0; color: var(--cream-dim); font: 400 clamp(1.1rem, 1.6vw, 1.3rem)/1.5 'Crimson Pro', serif; }
+.page-intro > p:last-of-type:not(.section-label) { position: relative; z-index: 1; max-width: 510px; margin: 0; color: var(--cream-dim); font: 400 clamp(1.1rem, 1.6vw, 1.3rem)/1.5 'Crimson Pro', serif; }
 .resume-intro > p:last-of-type { max-width: none; white-space: nowrap; }
 .projects-intro > p:last-of-type { max-width: none; white-space: nowrap; }
 .page-spark { position: absolute; top: 30%; right: 15%; color: var(--pink); font-size: 53px; animation: drift 5s ease-in-out infinite; }
 .resume-page { --page-accent: var(--pink); }
 .projects-page { --page-accent: var(--blue); }
 .about-page { --page-accent: var(--lilac); }
-.about-intro .section-label { color: var(--lilac); font: 500 .7rem 'Fira Sans', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
 .contact-page { --page-accent: var(--gold); }
 
 .resume-document { width: min(82vw, 1020px); margin: 0 auto; padding: 0 0 100px; }
