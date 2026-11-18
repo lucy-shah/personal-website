@@ -1,41 +1,109 @@
-const referencePlaceholders = Array.from({ length: 6 }, (_, index) => `reference-${index + 1}`)
-const boardPlaceholders = Array.from({ length: 3 }, (_, index) => `board-${index + 1}`)
+import { useMemo, useState } from 'react'
+import StarList from '../components/inspiration/StarList.jsx'
+import StarMap from '../components/inspiration/StarMap.jsx'
+import TalentedPeople from '../components/inspiration/TalentedPeople.jsx'
+import { clusters, stars, talentedPeople } from '../data/inspiration.js'
+import { SORTS, buildConstellation, mostRecentClusterId, pluralStars } from '../lib/constellation.js'
+import '../styles/inspiration.css'
+
+const prefersList = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
 
 function Inspiration() {
+  const constellation = useMemo(() => buildConstellation(clusters, stars), [])
+  const [view, setView] = useState(() => (prefersList() ? 'list' : 'map'))
+  // Opens centred on whichever constellation was updated most recently.
+  const [focusId, setFocusId] = useState(() => mostRecentClusterId(stars))
+  const [selectedId, setSelectedId] = useState(null)
+  const [sort, setSort] = useState('newest')
+
+  const focused = clusters.find((cluster) => cluster.id === focusId)
+  const focusedCount = focused ? constellation.byCluster[focused.id].stars.length : 0
+
+  const chooseCluster = (clusterId) => {
+    setSelectedId(null)
+    setFocusId((current) => (clusterId === null || current === clusterId ? null : clusterId))
+  }
+
+  const switchView = (nextView) => {
+    setSelectedId(null)
+    setView(nextView)
+  }
+
+  const focusHint = focused
+    ? `${focused.label} · ${pluralStars(focusedCount)} · tap a star to open it · tap ${focused.label} again to see everything`
+    : null
+
   return (
     <main className="inspiration-page">
-      <section className="inspiration-hero" aria-labelledby="inspiration-title">
-        <p className="section-label">A PERSONAL REFERENCE SHELF</p>
-        <h1 id="inspiration-title">Things that inspire me</h1>
-        <p>Not much to see here yet, but check back soon!</p>
-        <span className="inspiration-link-placeholder">Link coming soon <span aria-hidden="true">↗</span></span>
-        <span className="inspiration-spark" aria-hidden="true">✳</span>
+      <section className="brain-map" aria-labelledby="brain-map-title">
+        <header className="brain-map-header">
+          <div>
+            <h1 id="brain-map-title" className="inspo-title">Things that inspire me</h1>
+            <p className="brain-map-subtitle">A map of my brain</p>
+          </div>
+          {view === 'list' && (
+            <div className="view-toggle" role="group" aria-label="View">
+              <button type="button" aria-pressed={false} onClick={() => switchView('map')}>✧ Map</button>
+              <button type="button" aria-pressed className="is-active">List</button>
+            </div>
+          )}
+        </header>
+
+        <div className="brain-map-controls">
+          <div className="cluster-chips" role="group" aria-label="Filter by cluster">
+            <button type="button" className={!focusId ? 'is-active' : ''} aria-pressed={!focusId} onClick={() => chooseCluster(null)}>
+              Everything
+            </button>
+            {clusters.map((cluster) => (
+              <button
+                key={cluster.id}
+                type="button"
+                className={focusId === cluster.id ? 'is-active' : ''}
+                aria-pressed={focusId === cluster.id}
+                onClick={() => chooseCluster(cluster.id)}
+              >
+                {cluster.label}
+              </button>
+            ))}
+          </div>
+
+          {view === 'map' ? (
+            <button type="button" className="view-as-list" onClick={() => switchView('list')}>
+              view as list <span aria-hidden="true">☰</span>
+            </button>
+          ) : (
+            <div className="list-sort" role="group" aria-label="Sort">
+              <span>sort:</span>
+              {SORTS.map((option) => (
+                <button key={option.id} type="button" className={sort === option.id ? 'is-active' : ''} aria-pressed={sort === option.id} onClick={() => setSort(option.id)}>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {view === 'map' ? (
+          <>
+            <StarMap
+              clusters={clusters}
+              constellation={constellation}
+              focusId={focusId}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              onFocusCluster={chooseCluster}
+            />
+            <div className="brain-map-legend">
+              {focusHint && <p className="brain-map-hint" aria-live="polite">{focusHint}</p>}
+              <p>pink dashed line = “this led to that”</p>
+            </div>
+          </>
+        ) : (
+          <StarList clusters={clusters} constellation={constellation} focusId={focusId} sort={sort} />
+        )}
       </section>
 
-      <section className="reference-section" aria-labelledby="people-work-title">
-        <div className="reference-heading">
-          <p className="section-label">OPEN TABS IN MY BRAIN</p>
-          <h2 id="people-work-title">People &amp; work</h2>
-        </div>
-        <ul className="reference-list">
-          {referencePlaceholders.map((placeholder) => (
-            <li key={placeholder}>
-              <span><strong>Coming soon</strong><small>A reference to add later</small></span>
-              <span className="reference-arrow" aria-hidden="true">✧</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="boards-section" aria-labelledby="boards-title">
-        <p className="section-label">LITTLE WINDOWS INTO MY TASTE</p>
-        <h2 id="boards-title">Saved for later.</h2>
-        <div className="board-links" aria-label="Saved inspiration placeholders">
-          {boardPlaceholders.map((placeholder) => (
-            <span className="board-placeholder" key={placeholder}>Board to add later</span>
-          ))}
-        </div>
-      </section>
+      <TalentedPeople people={talentedPeople} />
     </main>
   )
 }

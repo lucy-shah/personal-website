@@ -257,31 +257,6 @@
 .placeholder-spark { color: var(--pink); font-size: 26px; }
 .about-flower { position: absolute; top: 9%; right: 6%; color: var(--lilac); font-size: 37px; transform: rotate(-17deg); }
 
-.inspiration-page { --page-accent: var(--lilac); }
-.inspiration-hero { position: relative; padding: 96px max(14vw, calc((100vw - 1020px) / 2)) 83px; overflow: hidden; }
-.inspiration-hero .section-label,.reference-section .section-label,.boards-section .section-label { color: var(--page-accent); }
-.inspiration-hero h1 { margin: 0 0 18px; color: var(--cream); font: 400 clamp(2.2rem, 5vw, 4.3rem)/1.05 'Limelight', serif; white-space: nowrap; }
-.inspiration-hero h1 em { color: var(--page-accent); font-style: normal; }
-.inspiration-hero > p:not(.section-label) { max-width: none; margin: 0; color: var(--cream-dim); font: clamp(.68rem, 1.3vw, 1.05rem)/1.5 'Fira Sans', sans-serif; white-space: nowrap; }
-.inspiration-link-placeholder { display: inline-flex; align-items: center; gap: 9px; margin-top: 22px; padding-bottom: 5px; border-bottom: 1px solid var(--page-accent); color: var(--cream-dim); font: 500 .65rem 'Fira Sans', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
-.inspiration-link-placeholder span { color: var(--page-accent); }
-.inspiration-spark { position: absolute; top: 25%; right: 17%; color: var(--pink); font-size: 64px; animation: drift 5s ease-in-out infinite; }
-.reference-section { display: grid; grid-template-columns: .7fr 1.3fr; gap: 8vw; padding: 52px max(14vw, calc((100vw - 1020px) / 2)) 96px; background: #202d28; }
-.reference-heading .section-label { margin-bottom: 15px; }
-.reference-heading h2,.boards-section h2 { margin: 0; color: var(--cream); font: 400 clamp(2.4rem, 4vw, 3.5rem)/1.05 'Crimson Pro', serif; }
-.reference-list { margin: 0; padding: 0; list-style: none; }
-.reference-list li { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 16px 0; border-top: 1px solid var(--line-dark); }
-.reference-list strong,.reference-list small { display: block; }
-.reference-list strong { font: 400 1.42rem 'Crimson Pro', serif; }
-.reference-list small { margin-top: 4px; color: var(--cream-dim); font: .72rem 'Fira Sans', sans-serif; }
-.reference-arrow { color: var(--page-accent); transition: transform .2s ease; }
-.reference-arrow { font-size: 1.1rem; }
-.boards-section { padding: 82px max(14vw, calc((100vw - 1020px) / 2)) 100px; }
-.boards-section .section-label { margin-bottom: 14px; color: var(--pink); }
-.board-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 27px; }
-.board-placeholder { display: inline-flex; min-width: 175px; min-height: 125px; align-items: center; justify-content: center; padding: 18px; border: 1px solid var(--pink); border-radius: 50%; color: var(--cream); font: .71rem 'Fira Sans', sans-serif; text-align: center; text-transform: uppercase; }
-.board-placeholder:nth-child(2) { border-color: var(--blue); border-radius: 46% 54% 50% 50% / 53% 43% 57% 47%; }
-.board-placeholder:nth-child(3) { border-color: var(--gold); }
 
 .contact-intro h1 { max-width: none; font-size: clamp(3.5rem, 8vw, 6.5rem); white-space: nowrap; }
 .contact-intro .section-label { color: var(--gold); }
@@ -322,7 +297,6 @@
   .resume-role,.resume-project { grid-template-columns: minmax(140px, .55fr) minmax(0, 1.45fr); gap: 20px; }
   .about-story,.about-preview { grid-template-columns: minmax(0, 1fr) minmax(190px, .55fr); gap: 24px 6vw; padding-inline: 9vw; }
   .about-preview .about-photo-home { width: min(100%, 290px); }
-  .reference-section { grid-template-columns: 1fr; gap: 28px; }
   .work-preview { padding-inline: 9vw; }
   .inspiration-preview,.resume-preview,.contact-preview { padding-inline: 9vw; }
 }
@@ -392,14 +366,6 @@
   .about-photo-home { width: min(70vw, 260px); justify-self: center; }
   .about-photo-frame { width: min(75vw, 300px); }
   .about-flower { top: 3%; right: 8%; }
-  .inspiration-hero { padding: 76px 9vw 68px; }
-  .inspiration-hero h1 { font-size: clamp(1.3rem, 7vw, 2.3rem); }
-  .inspiration-hero > p:not(.section-label) { font-size: clamp(.58rem, 2.2vw, .82rem); }
-  .inspiration-spark { top: 17%; right: 7%; font-size: 44px; }
-  .reference-section { padding: 50px 9vw 80px; }
-  .boards-section { padding: 70px 9vw 80px; }
-  .board-links { gap: 10px; }
-  .board-placeholder { min-width: 145px; min-height: 105px; padding: 12px; font-size: .62rem; }
   .contact-details { width: calc(100% - 14vw); padding-bottom: 76px; }
   .contact-orb-list { gap: 12px; }
   .contact-intro > p:last-of-type { white-space: normal; }
