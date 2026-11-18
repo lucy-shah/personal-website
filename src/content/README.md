@@ -30,8 +30,7 @@ inspiration/
   "why": "I underlined half of it",
   "description": "Longer note shown when someone clicks the star.",
   "saved": "2026-11-12",
-  "link": "https://example.com",
-  "ledTo": ["someone-i-admire"]
+  "link": "https://example.com"
 }
 ```
 
@@ -43,7 +42,6 @@ inspiration/
 | `why`         |          | one line |
 | `description` |          | shown in the popup |
 | `link`        |          | adds a "Visit →" / "Read more →" link |
-| `ledTo`       |          | file names (without `.json`) of stars this one led to. They can be in any folder. Each draws a pink dashed line. |
 | `offset`      |          | `{ "x": 10, "y": -6 }` to nudge a star from its automatic spot |
 
 **Quotes** use a simpler shape. The popup shows the whole quote, and the map and list show a shortened version:
@@ -59,7 +57,7 @@ inspiration/
 }
 ```
 
-- **The file name is the star's id.** Use it in `ledTo`.
+- **The file name is the star's id.**
 - **Image:** put an image with the same name next to it, e.g. `a-book-that-rewired-my-brain.jpg` (jpg / png / webp / gif / avif). It shows at the top of the popup.
 - **Placement is automatic.** Each new star joins the outer edge of its constellation and links to the nearest existing star, so the shape grows on its own and older stars never move. Constellations shrink to fit as they get big, so they never collide.
 - Files starting with `_` are ignored. Use them for drafts (e.g. `_draft-idea.json`).

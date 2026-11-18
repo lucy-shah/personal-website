@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Interactive helper: `npm run add` → writes a JSON file into src/content/.
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { stdin as input, stdout as output } from 'node:process'
 import readline from 'node:readline/promises'
@@ -49,12 +49,6 @@ function uniquePath(dir, slug) {
   return { slug: candidate, file: path.join(dir, `${candidate}.json`) }
 }
 
-function existingStarIds() {
-  return readdirSync(starsDir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .flatMap((dir) => readdirSync(path.join(starsDir, dir.name)).filter((file) => file.endsWith('.json') && !file.startsWith('_')))
-    .map((file) => file.replace(/\.json$/, ''))
-}
 
 const compact = (object) => Object.fromEntries(Object.entries(object).filter(([, value]) => value !== '' && value !== undefined))
 
@@ -66,26 +60,14 @@ function write(dir, slug, data) {
   console.log(`  Optional image: add ${target.slug}.jpg (or .png/.webp) next to it.\n`)
 }
 
-function askLedTo() {
-  const ids = existingStarIds()
-  if (ids.length) console.log(`  Existing stars: ${ids.join(', ')}`)
-  return ask('Led to (comma-separated file names, optional)').then((answer) => {
-    const ledTo = answer.split(',').map((id) => id.trim()).filter(Boolean)
-    const unknown = ledTo.filter((id) => !ids.includes(id))
-    if (unknown.length) console.log(`  Heads up — not found yet: ${unknown.join(', ')}`)
-    return ledTo.length ? ledTo : undefined
-  })
-}
-
 async function addQuote() {
   const quote = await ask('Quote (paste the whole thing on one line)')
   if (!quote) throw new Error('A quote is required.')
   const by = await ask('Author / who said it')
   const link = await ask('Link')
-  const ledTo = await askLedTo()
   const saved = await ask('Saved date', today())
   const slug = slugify(by || quote.split(/\s+/).slice(0, 6).join(' '))
-  write(path.join(starsDir, 'quotes'), slug, compact({ quote, by, saved, link, ledTo }))
+  write(path.join(starsDir, 'quotes'), slug, compact({ quote, by, saved, link }))
 }
 
 async function addStar(cluster) {
@@ -95,7 +77,6 @@ async function addStar(cluster) {
   const why = await ask('Why it inspires you (one line)')
   const description = await ask('Longer description for the popup')
   const link = await ask('Link')
-  const ledTo = await askLedTo()
   const saved = await ask('Saved date', today())
 
   write(path.join(starsDir, cluster), slugify(title), compact({
@@ -105,7 +86,6 @@ async function addStar(cluster) {
     description,
     saved,
     link,
-    ledTo,
   }))
 }
 
@@ -114,7 +94,30 @@ async function addPerson() {
   if (!name) throw new Error('A name is required.')
   const role = await ask('Role (e.g. "swe @ riv")')
   const link = await ask('Link to their work')
-  write(peopleDir, slugify(name), compact({ name, role, link, added: today() }))
+  listWallOrder()
+  const orderAnswer = await ask('Order on the wall (1 = first, blank = after everyone)')
+  const order = Number.parseInt(orderAnswer, 10)
+  if (orderAnswer && !(order > 0)) console.log('  Not a number above 0, so they’ll go after everyone.')
+  write(peopleDir, slugify(name), compact({ name, role, link, added: today(), order: order > 0 ? order : undefined }))
+}
+
+// Prints who's already on the wall, in display order, so picking a number is easy.
+function listWallOrder() {
+  if (!existsSync(peopleDir)) return
+  const people = readdirSync(peopleDir)
+    .filter((file) => file.endsWith('.json') && !file.startsWith('_'))
+    .map((file) => {
+      try {
+        return JSON.parse(readFileSync(path.join(peopleDir, file), 'utf8'))
+      } catch {
+        return null
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity) || (a.added ?? '').localeCompare(b.added ?? ''))
+  if (!people.length) return
+  console.log('  Currently on the wall:')
+  people.forEach((person, index) => console.log(`    ${index + 1}. ${person.name}${person.order ? ` (order ${person.order})` : ''}`))
 }
 
 try {

@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { formatSaved, ledToCount, pluralStars } from '../../lib/constellation.js'
+import { useEffect, useRef, useState } from 'react'
+import { formatSaved } from '../../lib/constellation.js'
 
 function metaLine(star, cluster) {
   const saved = formatSaved(star.saved)
@@ -15,6 +15,25 @@ function quoteSize(quote) {
   return ''
 }
 
+// Images size themselves: wide/large ones fill the top of the card, small ones
+// (logos, icons) sit at their natural size on a soft backdrop — never stretched.
+const FULL_BLEED_MIN_WIDTH = 320
+
+function StarImage({ src }) {
+  const [fit, setFit] = useState(null)
+  const handleLoad = (event) => {
+    const { naturalWidth, naturalHeight } = event.currentTarget
+    const isSmall = naturalWidth < FULL_BLEED_MIN_WIDTH
+    const isTall = naturalHeight > naturalWidth * 1.15
+    setFit(isSmall ? 'is-small' : isTall ? 'is-tall' : 'is-wide')
+  }
+  return (
+    <div className={`star-popup-media ${fit ?? 'is-loading'}`}>
+      <img src={src} alt="" onLoad={handleLoad} />
+    </div>
+  )
+}
+
 function linkLabel(star) {
   return star.cluster === 'people' || star.cluster === 'websites' ? 'Visit' : 'Read more'
 }
@@ -24,7 +43,6 @@ function linkLabel(star) {
 export function StarPopup({ star, cluster, style, className = '', preview = false, onClose }) {
   const cardRef = useRef(null)
   const closeRef = useRef(null)
-  const count = ledToCount(star)
   const body = star.description || (star.why && `why: ${star.why}`)
 
   useEffect(() => {
@@ -62,7 +80,7 @@ export function StarPopup({ star, cluster, style, className = '', preview = fals
           ×
         </button>
       )}
-      {star.image && <img className="star-popup-image" src={star.image} alt="" />}
+      {star.image && <StarImage src={star.image} />}
       <div className="star-popup-body">
         <p className="star-card-meta">{metaLine(star, cluster)}</p>
         {star.quote ? (
@@ -77,16 +95,11 @@ export function StarPopup({ star, cluster, style, className = '', preview = fals
             {body && <p className="star-popup-text">{body}</p>}
           </>
         )}
-        {(star.link || count > 0) && (
+        {star.link && (
           <div className="star-popup-footer">
-            {star.link ? (
-              <a href={star.link} target="_blank" rel="noreferrer">
-                {linkLabel(star)} →
-              </a>
-            ) : (
-              <span />
-            )}
-            {count > 0 && <span className="star-popup-led">led to {pluralStars(count)}</span>}
+            <a href={star.link} target="_blank" rel="noreferrer">
+              {linkLabel(star)} →
+            </a>
           </div>
         )}
       </div>

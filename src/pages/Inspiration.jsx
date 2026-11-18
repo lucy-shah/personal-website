@@ -3,7 +3,7 @@ import StarList from '../components/inspiration/StarList.jsx'
 import StarMap from '../components/inspiration/StarMap.jsx'
 import TalentedPeople from '../components/inspiration/TalentedPeople.jsx'
 import { clusters, stars, talentedPeople } from '../data/inspiration.js'
-import { SORTS, buildConstellation, mostRecentClusterId, pluralStars } from '../lib/constellation.js'
+import { SORTS, buildConstellation, mostRecentClusterId } from '../lib/constellation.js'
 import '../styles/inspiration.css'
 
 const prefersList = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
@@ -16,8 +16,6 @@ function Inspiration() {
   const [selectedId, setSelectedId] = useState(null)
   const [sort, setSort] = useState('newest')
 
-  const focused = clusters.find((cluster) => cluster.id === focusId)
-  const focusedCount = focused ? constellation.byCluster[focused.id].stars.length : 0
 
   const chooseCluster = (clusterId) => {
     setSelectedId(null)
@@ -28,10 +26,6 @@ function Inspiration() {
     setSelectedId(null)
     setView(nextView)
   }
-
-  const focusHint = focused
-    ? `${focused.label} · ${pluralStars(focusedCount)} · tap a star to open it · tap ${focused.label} again to see everything`
-    : null
 
   return (
     <main className="inspiration-page">
@@ -93,10 +87,7 @@ function Inspiration() {
               onSelect={setSelectedId}
               onFocusCluster={chooseCluster}
             />
-            <div className="brain-map-legend">
-              {focusHint && <p className="brain-map-hint" aria-live="polite">{focusHint}</p>}
-              <p>pink dashed line = “this led to that”</p>
-            </div>
+            <p className="brain-map-legend">tap a star to open it</p>
           </>
         ) : (
           <StarList clusters={clusters} constellation={constellation} focusId={focusId} sort={sort} />

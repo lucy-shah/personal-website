@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { formatSaved, sortStars } from '../../lib/constellation.js'
 
 const COLLAPSED_COUNT = 3
@@ -9,22 +9,6 @@ function StarGlyph({ size, color }) {
 
 function StarList({ clusters, constellation, focusId, sort }) {
   const [expanded, setExpanded] = useState({})
-  const [highlightId, setHighlightId] = useState(null)
-
-  useEffect(() => {
-    if (!highlightId) return undefined
-    document.getElementById(`star-row-${highlightId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    const timer = setTimeout(() => setHighlightId(null), 1800)
-    return () => clearTimeout(timer)
-  }, [highlightId])
-
-  const jumpTo = (starId) => {
-    const target = constellation.starsById[starId]
-    if (!target) return
-    setExpanded((current) => ({ ...current, [target.cluster]: true }))
-    setHighlightId(starId)
-  }
-
   const groups = clusters
     .filter((cluster) => !focusId || cluster.id === focusId)
     .map((cluster) => ({ cluster, stars: sortStars(constellation.byCluster[cluster.id].stars, sort) }))
@@ -54,7 +38,7 @@ function StarList({ clusters, constellation, focusId, sort }) {
                 <li
                   key={star.id}
                   id={`star-row-${star.id}`}
-                  className={`star-row${star.id === highlightId ? ' is-highlighted' : ''}${star.link ? ' has-link' : ''}`}
+                  className={`star-row${star.link ? ' has-link' : ''}`}
                 >
                   <span className="star-row-glyph">
                     <StarGlyph size={15} color={cluster.color} />
@@ -71,18 +55,6 @@ function StarList({ clusters, constellation, focusId, sort }) {
                   </div>
                   <div className="star-row-why">
                     {star.why && <p>why: {star.why}</p>}
-                    {star.ledTo?.length > 0 && (
-                      <p className="star-row-led">
-                        <span>led to</span>
-                        {star.ledTo
-                          .filter((id) => constellation.starsById[id])
-                          .map((id) => (
-                            <button key={id} type="button" onClick={() => jumpTo(id)}>
-                              ✧ {constellation.starsById[id].title}
-                            </button>
-                          ))}
-                      </p>
-                    )}
                   </div>
                   <p className="star-row-saved">{star.saved && `saved ${formatSaved(star.saved)}`}</p>
                   <span className="star-row-arrow" aria-hidden="true">

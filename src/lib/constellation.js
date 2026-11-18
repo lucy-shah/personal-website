@@ -120,7 +120,7 @@ function buildTimeline(stars, byCluster) {
   })
 
   const lastStar = Math.max(DRAW_START, ...Object.values(starDelay))
-  return { starDelay, lineDelay, ledToDelay: lastStar + 300, lineDuration: LINE_DURATION }
+  return { starDelay, lineDelay, endsAt: lastStar + 300, lineDuration: LINE_DURATION }
 }
 
 export function buildConstellation(clusters, stars) {
@@ -130,9 +130,6 @@ export function buildConstellation(clusters, stars) {
   if (import.meta.env.DEV) {
     stars.forEach((star) => {
       if (!clusterIds.has(star.cluster)) console.warn(`[inspiration] "${star.id}" has unknown cluster "${star.cluster}"`)
-      star.ledTo?.forEach((target) => {
-        if (!starIds.has(target)) console.warn(`[inspiration] "${star.id}" ledTo unknown star "${target}"`)
-      })
     })
     if (starIds.size !== stars.length) console.warn('[inspiration] duplicate star ids found')
   }
@@ -145,11 +142,7 @@ export function buildConstellation(clusters, stars) {
     layout.stars.forEach((star) => { starsById[star.id] = star })
   })
 
-  const ledToLinks = stars.flatMap((star) =>
-    (star.ledTo ?? []).filter((target) => starsById[target]).map((target) => ({ from: star.id, to: target })),
-  )
-
-  return { byCluster, starsById, ledToLinks, timeline: buildTimeline(stars, byCluster) }
+  return { byCluster, starsById, timeline: buildTimeline(stars, byCluster) }
 }
 
 // Room each cluster gets (half-width × half-height, in stage px) per mode.
@@ -221,12 +214,4 @@ export function sortStars(list, sortId) {
   const sorted = [...list]
   if (sortId === 'alpha') return sorted.sort((a, b) => a.title.localeCompare(b.title))
   return sorted.sort((a, b) => compareBySaved(b, a))
-}
-
-export function ledToCount(star) {
-  return star.ledTo?.length ?? 0
-}
-
-export function pluralStars(count, word = 'star') {
-  return `${count} ${word}${count === 1 ? '' : 's'}`
 }

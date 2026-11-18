@@ -43,16 +43,16 @@
 .list-sort button + button::before { margin: 0 10px; color: var(--inspo-muted); content: '·'; }
 .list-sort button.is-active { color: var(--cream); }
 
-.brain-map-legend { margin-top: 12px; padding-inline: var(--inspo-gutter); color: var(--inspo-muted); font: 400 11px var(--inspo-mono); }
-.brain-map-legend p { margin: 0; }
-.brain-map-legend .brain-map-hint { margin-bottom: 8px; color: var(--inspo-pink); font-size: 12px; line-height: 1.5; }
-.brain-map-legend span { margin-inline: 1.6em; }
+.brain-map-legend { margin-top: 12px; margin-bottom: 0; padding-inline: var(--inspo-gutter); color: var(--inspo-muted); font: 400 11px var(--inspo-mono); }
 
 /* ── Star map ──────────────────────────────────────────────────────── */
 
-.star-map-viewport { position: relative; overflow: hidden; user-select: none; }
-.star-map-viewport.can-pan { cursor: grab; touch-action: pan-y; }
-.star-map-viewport.can-pan:active { cursor: grabbing; }
+.star-map-viewport { position: relative; overflow: hidden; background-color: var(--inspo-bg); background-repeat: repeat; user-select: none; }
+/* Drag to move, pinch / ⌘+scroll / double-click to zoom. Unzoomed, a vertical
+   swipe on touch still scrolls the page; zoomed in, every drag moves the map. */
+.star-map-viewport { cursor: grab; touch-action: pan-y; }
+.star-map-viewport:active { cursor: grabbing; }
+.star-map-viewport.is-zoomed { touch-action: none; }
 .star-stage { position: absolute; top: 0; left: 0; width: 1200px; height: 640px; transform-origin: 0 0; }
 .star-stage-sky { position: absolute; inset: 0; overflow: visible; }
 
@@ -68,8 +68,6 @@
 .star-lines line { stroke: var(--line-color); stroke-opacity: .45; stroke-width: 1; transition: stroke .4s ease, stroke-opacity .4s ease; }
 .star-lines.mode-focus line { stroke: var(--inspo-pink); stroke-opacity: .75; stroke-width: 1.3; }
 .star-lines.mode-dim line { stroke: var(--cream); stroke-opacity: .15; }
-.star-led-to line { stroke: var(--inspo-pink); stroke-dasharray: 3 6; stroke-opacity: .6; transition: opacity .4s ease; }
-.star-led-to line.is-hidden { opacity: 0; }
 
 .star-cluster-label {
   position: absolute;
@@ -143,7 +141,6 @@
 
 .star-node-wrap .star-node { animation: star-pop .6s cubic-bezier(.2, .7, .3, 1) var(--delay, 0ms) both; }
 .star-line { stroke-dasharray: 1; stroke-dashoffset: 0; animation: star-line-draw linear both; }
-.star-led-to { animation: inspo-fade .8s ease both; }
 .star-cluster-label { animation: inspo-fade .7s ease both; }
 
 .star-node-label { position: absolute; top: 0; left: 0; color: rgb(242 238 228 / 90%); font: 400 13px 'Fira Sans', sans-serif; pointer-events: none; transform: translateY(-50%); transition: color .4s ease, opacity .4s ease; white-space: nowrap; animation: inspo-fade .5s ease calc(var(--delay, 0ms) + 300ms) both; }
@@ -168,6 +165,7 @@
 .star-zoom button { height: 37px; padding: 0; border: 0; background: none; color: var(--cream); cursor: pointer; font: 400 18px 'Fira Sans', sans-serif; }
 .star-zoom button:hover:not(:disabled) { color: var(--inspo-pink); }
 .star-zoom button:disabled { cursor: default; opacity: .35; }
+.star-zoom .star-zoom-reset { border-top: 1px solid rgb(242 238 228 / 15%); font-size: 16px; }
 
 /* ── Hover card + popup ────────────────────────────────────────────── */
 
@@ -189,9 +187,20 @@
 /* Hover preview: same card, just not clickable — click the star to pin it. */
 .star-popup.is-preview { z-index: 4; pointer-events: none; animation-duration: .15s; }
 .star-popup.is-centered { position: fixed; z-index: 50; top: 50%; left: 50%; max-height: calc(100svh - 48px); overflow-y: auto; transform: translate(-50%, -50%); }
-.star-popup-close { position: absolute; z-index: 1; top: 6px; right: 10px; padding: 2px 6px; border: 0; background: none; color: rgb(242 238 228 / 85%); cursor: pointer; font: 400 22px/1 'Fira Sans', sans-serif; }
+.star-popup-close { position: absolute; z-index: 1; top: 8px; right: 8px; display: grid; width: 28px; height: 28px; place-items: center; padding: 0 0 2px; border: 0; border-radius: 50%; background: rgb(28 35 33 / 60%); color: rgb(242 238 228 / 90%); cursor: pointer; font: 400 20px/1 'Fira Sans', sans-serif; }
 .star-popup-close:hover { color: var(--inspo-pink); }
-.star-popup-image { width: 100%; height: 190px; background: rgb(217 160 138 / 80%); object-fit: cover; }
+.star-popup-media { display: flex; max-height: 240px; align-items: center; justify-content: center; overflow: hidden; background: rgb(242 238 228 / 4%); }
+.star-popup-media img { display: block; width: auto; max-width: 100%; height: auto; max-height: 240px; }
+.star-popup-media.is-loading { min-height: 120px; }
+.star-popup-media.is-loading img { opacity: 0; }
+/* Wide images fill the card edge to edge (capped height). */
+.star-popup-media.is-wide img { width: 100%; object-fit: cover; }
+/* Small images (logos, icons) keep their real size with a little breathing room. */
+.star-popup-media.is-small { padding: 18px 18px 4px; background: none; }
+.star-popup-media.is-small img { max-height: 120px; border-radius: 6px; }
+/* Tall images are shown whole, centred, rather than cropped to a sliver. */
+.star-popup-media.is-tall { padding-top: 14px; background: none; }
+.star-popup-media.is-tall img { max-height: 220px; border-radius: 4px; }
 .star-popup-body { display: flex; flex-direction: column; gap: 8px; padding: 18px 22px 20px; }
 .star-popup:not(.has-image) .star-popup-body { padding-right: 40px; }
 .star-popup-title { margin: 0; color: var(--cream); font: 400 26px/1.2 var(--inspo-serif); }
@@ -206,7 +215,6 @@
 .star-popup-footer { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-top: 6px; white-space: nowrap; }
 .star-popup-footer a { color: var(--inspo-pink); font: 500 13px 'Fira Sans', sans-serif; text-decoration: none; }
 .star-popup-footer a:hover { text-decoration: underline; }
-.star-popup-led { color: rgb(174 179 170 / 70%); font: 400 11px var(--inspo-mono); }
 
 /* ── List view ─────────────────────────────────────────────────────── */
 
@@ -231,8 +239,6 @@
 }
 .star-row:hover,
 .star-row:focus-within,
-.star-row.is-highlighted { background: var(--inspo-card); }
-.star-row.is-highlighted { box-shadow: 0 0 0 1px rgb(233 163 193 / 50%); }
 .star-row-glyph { display: grid; height: 28px; place-items: center; }
 .star-row-title a,
 .star-row-title span { color: var(--cream); font: 400 22px/1.25 var(--inspo-serif); text-decoration: none; transition: color .2s ease; }
@@ -242,10 +248,6 @@
 .star-row-title a:focus-visible { color: var(--inspo-pink); }
 .star-row-title small { display: block; margin-top: 4px; color: rgb(199 185 226 / 85%); font: 400 11px var(--inspo-mono); letter-spacing: .04em; }
 .star-row-why p { margin: 6px 0 0; color: var(--inspo-muted); font: 400 12px/1.45 var(--inspo-mono); }
-.star-row-why .star-row-led { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; }
-.star-row-led span { margin-right: 6px; color: rgb(233 163 193 / 80%); font: 400 11px var(--inspo-mono); }
-.star-row-led button { position: relative; z-index: 1; padding: 3px 10px; border: 1px solid rgb(233 163 193 / 50%); border-radius: 999px; background: none; color: rgb(233 163 193 / 90%); cursor: pointer; font: 400 11px var(--inspo-mono); transition: background .2s ease; }
-.star-row-led button:hover { background: rgb(233 163 193 / 12%); }
 .star-row-saved { margin: 7px 0 0; color: rgb(174 179 170 / 60%); font: 400 11px var(--inspo-mono); white-space: nowrap; }
 .star-row-arrow { color: rgb(242 238 228 / 50%); font: 400 18px/1.5 'Fira Sans', sans-serif; transition: color .2s ease, transform .2s ease; }
 .star-row.has-link:hover .star-row-arrow { color: var(--inspo-pink); transform: translateX(3px); }
@@ -293,7 +295,6 @@ a.polaroid:focus-visible .polaroid-tape { border-color: rgb(180 110 142 / 80%); 
   .inspo-title { font-size: 40px; }
   .view-toggle { margin-top: 18px; }
   .brain-map-subtitle { line-height: 1.5; }
-  .brain-map-legend span { margin-inline: .6em; }
   .star-row { grid-template-columns: 22px minmax(0, 1fr) 18px; row-gap: 2px; padding: 14px 12px; }
   .star-row-why,
   .star-row-saved { grid-column: 2; }
@@ -312,7 +313,6 @@ a.polaroid:focus-visible .polaroid-tape { border-color: rgb(180 110 142 / 80%); 
 @media (prefers-reduced-motion: reduce) {
   .star-node-wrap .star-node,
   .star-line,
-  .star-led-to,
   .star-cluster-label,
   .star-node-new,
   .star-selected-glow .star-glyph { animation: none; }

@@ -4,37 +4,67 @@ import { StarPopup } from './StarCards.jsx'
 import useTweenedLayout from './useTweenedLayout.js'
 
 const MIN_ZOOM = 1
-const MAX_ZOOM = 2.5
-const ZOOM_STEP = 0.35
+const MAX_ZOOM = 4
+const ZOOM_STEP = 1.4 // each +/– click multiplies or divides the zoom by this
+// How far past the edge of the sky you can drag, as a share of the viewport.
+const OVERSCROLL = 0.5
 const MIN_FIT = 0.55
 const PINK = '#e9a3c1'
 const DIM = 'rgba(242, 238, 228, .35)'
 const CREAM = '#f2eee4'
 const POPUP_WIDTH = 380 // widest card (quotes); keeps placement on-screen for all
 
-// Deterministic background dust so the sky doesn't shimmer between renders.
-const DUST = (() => {
-  let seed = 7
+// Background dust is a repeating tile painted behind the map, so the sky never
+// runs out however far you drag. Two layers with different tile sizes hide the
+// repeat; the far one drifts slower for a little depth. Seeded so it's stable.
+function dustTile({ width, height, count, seed, radius, opacity }) {
+  let state = seed
   const random = () => {
-    seed = (seed * 16807) % 2147483647
-    return seed / 2147483647
+    state = (state * 16807) % 2147483647
+    return state / 2147483647
   }
-  return Array.from({ length: 140 }, () => ({
-    x: random() * STAGE.width,
-    y: random() * STAGE.height,
-    r: 0.5 + random() * 0.8,
-    o: 0.15 + random() * 0.3,
-  }))
-})()
+  const dots = Array.from({ length: count }, () => {
+    const x = (random() * width).toFixed(1)
+    const y = (random() * height).toFixed(1)
+    const r = (radius[0] + random() * (radius[1] - radius[0])).toFixed(2)
+    const o = (opacity[0] + random() * (opacity[1] - opacity[0])).toFixed(2)
+    return `<circle cx='${x}' cy='${y}' r='${r}' fill='%23f2eee4' fill-opacity='${o}'/>`
+  }).join('')
+  return { width, height, url: `url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}'>${dots}</svg>")` }
+}
 
-function clampPan(pan, scale, size) {
-  const width = STAGE.width * scale
-  const height = STAGE.height * scale
+const NEAR_DUST = dustTile({ width: STAGE.width, height: STAGE.height, count: 140, seed: 7, radius: [0.5, 1.3], opacity: [0.15, 0.45] })
+const FAR_DUST = dustTile({ width: 530, height: 410, count: 46, seed: 31, radius: [0.4, 0.9], opacity: [0.08, 0.22] })
+const FAR_DRIFT = 0.55 // far layer moves at this fraction of your drag
+
+function skyStyle(pan, scale) {
+  const far = scale * 0.85
   return {
-    x: width <= size.width ? (size.width - width) / 2 : Math.min(0, Math.max(size.width - width, pan.x)),
-    y: height <= size.height ? (size.height - height) / 2 : Math.min(0, Math.max(size.height - height, pan.y)),
+    backgroundImage: `${NEAR_DUST.url}, ${FAR_DUST.url}`,
+    backgroundSize: `${NEAR_DUST.width * scale}px ${NEAR_DUST.height * scale}px, ${FAR_DUST.width * far}px ${FAR_DUST.height * far}px`,
+    backgroundPosition: `${pan.x}px ${pan.y}px, ${pan.x * FAR_DRIFT}px ${pan.y * FAR_DRIFT}px`,
   }
 }
+
+// Keeps the sky mostly in view while letting you drag a little past its edges.
+function clampAxis(value, content, viewport) {
+  const centred = (viewport - content) / 2
+  const slack = viewport * OVERSCROLL
+  const low = Math.min(viewport - content, centred) - slack
+  const high = Math.max(0, centred) + slack
+  return Math.min(high, Math.max(low, value))
+}
+
+function clampPan(pan, scale, size) {
+  return {
+    x: clampAxis(pan.x, STAGE.width * scale, size.width),
+    y: clampAxis(pan.y, STAGE.height * scale, size.height),
+  }
+}
+
+const clampZoom = (value) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value))
+const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y)
+const midpoint = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 })
 
 function starColor(mode, cluster) {
   if (mode === 'focus') return PINK
@@ -53,7 +83,9 @@ const ms = (value) => `${Math.round(value)}ms`
 
 function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFocusCluster }) {
   const viewportRef = useRef(null)
-  const dragRef = useRef(null)
+  const pointersRef = useRef(new Map())
+  const gestureRef = useRef(null)
+  const zoomAtRef = useRef(null)
   const [width, setWidth] = useState(STAGE.width)
   const [zoom, setZoom] = useState(1)
   const [rawPan, setRawPan] = useState(null)
@@ -70,7 +102,7 @@ function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFoc
 
   // After the opening draw-in, anything that mounts later (labels on a chip click)
   // should appear immediately rather than wait on its load-time delay.
-  const introLength = constellation.timeline.ledToDelay + 900
+  const introLength = constellation.timeline.endsAt + 900
   useEffect(() => {
     const timer = setTimeout(() => setIntroDone(true), introLength)
     return () => clearTimeout(timer)
@@ -89,7 +121,7 @@ function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFoc
   const size = { width, height: STAGE.height * Math.min(fit, 1) }
   const centeredPan = { x: (size.width - STAGE.width * scale) / 2, y: (size.height - STAGE.height * scale) / 2 }
   const effectivePan = clampPan(rawPan ?? centeredPan, scale, size)
-  const canPan = STAGE.width * scale > size.width + 1 || STAGE.height * scale > size.height + 1
+  const isDefaultView = zoom === 1 && rawPan === null
 
   const targets = useMemo(() => clusterTargets(clusters, focusId, constellation.byCluster), [clusters, focusId, constellation])
   const positions = useTweenedLayout(targets)
@@ -112,36 +144,91 @@ function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFoc
 
   const toScreen = (point) => ({ x: effectivePan.x + point.x * scale, y: effectivePan.y + point.y * scale })
 
-  const zoomBy = (delta) => {
-    const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + delta))
-    if (nextZoom === zoom) return
-    const ratio = nextZoom / zoom
-    const centerX = size.width / 2
-    const centerY = size.height / 2
+  // Zoom so the point under `anchor` (viewport px) stays put — like a real map.
+  const zoomAt = (nextZoom, anchor = { x: size.width / 2, y: size.height / 2 }, fromZoom = zoom, fromPan = effectivePan) => {
+    const target = clampZoom(nextZoom)
+    const ratio = target / fromZoom
     setRawPan(
-      clampPan(
-        { x: centerX - (centerX - effectivePan.x) * ratio, y: centerY - (centerY - effectivePan.y) * ratio },
-        fit * nextZoom,
-        size,
-      ),
+      clampPan({ x: anchor.x - (anchor.x - fromPan.x) * ratio, y: anchor.y - (anchor.y - fromPan.y) * ratio }, fit * target, size),
     )
-    setZoom(nextZoom)
+    setZoom(target)
+  }
+
+  const resetView = () => {
+    setZoom(1)
+    setRawPan(null)
+  }
+
+  const localPoint = (event) => {
+    const rect = viewportRef.current.getBoundingClientRect()
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+  }
+
+  // Trackpad pinch and ⌘/Ctrl + scroll zoom the map. Plain scrolling still
+  // scrolls the page. Needs a native listener so it can preventDefault.
+  useEffect(() => {
+    zoomAtRef.current = { zoomAt, zoom }
+  })
+  useEffect(() => {
+    const element = viewportRef.current
+    if (!element) return undefined
+    const handleWheel = (event) => {
+      if (!event.ctrlKey && !event.metaKey) return
+      event.preventDefault()
+      const rect = element.getBoundingClientRect()
+      const { zoomAt: zoomAtLatest, zoom: current } = zoomAtRef.current
+      // Trackpad pinches send many small deltas, mouse wheels a few big ones —
+      // capping each step keeps both smooth (≤ ~1.3× per event).
+      const step = Math.max(-25, Math.min(25, event.deltaY))
+      zoomAtLatest(current * Math.exp(-step * 0.01), { x: event.clientX - rect.left, y: event.clientY - rect.top })
+    }
+    element.addEventListener('wheel', handleWheel, { passive: false })
+    return () => element.removeEventListener('wheel', handleWheel)
+  }, [])
+
+  // One pointer drags the map; two (touch) pinch-zoom it.
+  const startGesture = () => {
+    const points = [...pointersRef.current.values()]
+    if (points.length === 1) gestureRef.current = { type: 'drag', start: points[0], pan: effectivePan }
+    else if (points.length === 2) {
+      gestureRef.current = { type: 'pinch', distance: distance(...points), mid: midpoint(...points), zoom, pan: effectivePan }
+    } else gestureRef.current = null
   }
 
   const handlePointerDown = (event) => {
-    if (!canPan || event.target.closest('button, a, .star-popup')) return
-    dragRef.current = { x: event.clientX, y: event.clientY, pan: effectivePan }
+    if (event.button !== 0 || event.target.closest('button, a, .star-popup')) return
+    pointersRef.current.set(event.pointerId, localPoint(event))
     event.currentTarget.setPointerCapture(event.pointerId)
+    startGesture()
   }
 
   const handlePointerMove = (event) => {
-    const drag = dragRef.current
-    if (!drag) return
-    setRawPan(clampPan({ x: drag.pan.x + event.clientX - drag.x, y: drag.pan.y + event.clientY - drag.y }, scale, size))
+    if (!pointersRef.current.has(event.pointerId)) return
+    pointersRef.current.set(event.pointerId, localPoint(event))
+    const gesture = gestureRef.current
+    if (!gesture) return
+    const points = [...pointersRef.current.values()]
+    if (gesture.type === 'drag') {
+      setRawPan(clampPan({ x: gesture.pan.x + points[0].x - gesture.start.x, y: gesture.pan.y + points[0].y - gesture.start.y }, scale, size))
+    } else if (points.length === 2) {
+      const mid = midpoint(...points)
+      const nextZoom = clampZoom((gesture.zoom * distance(...points)) / gesture.distance)
+      const ratio = nextZoom / gesture.zoom
+      setRawPan(
+        clampPan({ x: mid.x - (gesture.mid.x - gesture.pan.x) * ratio, y: mid.y - (gesture.mid.y - gesture.pan.y) * ratio }, fit * nextZoom, size),
+      )
+      setZoom(nextZoom)
+    }
   }
 
-  const endDrag = () => {
-    dragRef.current = null
+  const endPointer = (event) => {
+    if (!pointersRef.current.delete(event.pointerId)) return
+    startGesture()
+  }
+
+  const handleDoubleClick = (event) => {
+    if (event.target.closest('button, a, .star-popup')) return
+    zoomAt(zoom * 1.8, localPoint(event))
   }
 
   const handleClose = useCallback(
@@ -192,21 +279,19 @@ function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFoc
     <div className="star-map">
       <div
         ref={viewportRef}
-        className={`star-map-viewport${canPan ? ' can-pan' : ''}`}
-        style={{ height: size.height }}
+        className={`star-map-viewport${zoom > 1 ? ' is-zoomed' : ''}`}
+        style={{ height: size.height, ...skyStyle(effectivePan, scale) }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
+        onPointerUp={endPointer}
+        onPointerCancel={endPointer}
+        onDoubleClick={handleDoubleClick}
       >
         <div
           className="star-stage"
           style={{ transform: `translate(${effectivePan.x}px, ${effectivePan.y}px) scale(${scale})` }}
         >
           <svg className="star-stage-sky" viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} width={STAGE.width} height={STAGE.height} aria-hidden="true">
-            {DUST.map((dust, index) => (
-              <circle key={index} cx={dust.x} cy={dust.y} r={dust.r} fill="#f2eee4" fillOpacity={dust.o} />
-            ))}
             {clusters.map((cluster) => {
               const mode = clusterMode(cluster.id, focusId)
               return (
@@ -230,23 +315,6 @@ function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFoc
                 </g>
               )
             })}
-            <g className="star-led-to" style={{ animationDelay: delay(timeline.ledToDelay) }}>
-              {constellation.ledToLinks.map(({ from, to }) => {
-                const start = placedById[from]
-                const end = placedById[to]
-                const visible = !focusId || start.cluster.id === focusId || end.cluster.id === focusId
-                return (
-                  <line
-                    key={`${from}->${to}`}
-                    className={visible ? '' : 'is-hidden'}
-                    x1={start.point.x}
-                    y1={start.point.y}
-                    x2={end.point.x}
-                    y2={end.point.y}
-                  />
-                )
-              })}
-            </g>
           </svg>
 
           {clusters.map((cluster) => {
@@ -357,12 +425,17 @@ function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFoc
         )}
 
         <div className="star-zoom" role="group" aria-label="Zoom">
-          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={zoom >= MAX_ZOOM} aria-label="Zoom in">
+          <button type="button" onClick={() => zoomAt(zoom * ZOOM_STEP)} disabled={zoom >= MAX_ZOOM} aria-label="Zoom in">
             +
           </button>
-          <button type="button" onClick={() => zoomBy(-ZOOM_STEP)} disabled={zoom <= MIN_ZOOM} aria-label="Zoom out">
+          <button type="button" onClick={() => zoomAt(zoom / ZOOM_STEP)} disabled={zoom <= MIN_ZOOM} aria-label="Zoom out">
             –
           </button>
+          {!isDefaultView && (
+            <button type="button" className="star-zoom-reset" onClick={resetView} aria-label="Reset view" title="Reset view">
+              ⟲
+            </button>
+          )}
         </div>
       </div>
     </div>
