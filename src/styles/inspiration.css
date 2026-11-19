@@ -237,7 +237,7 @@
   transition: background .2s ease, box-shadow .2s ease;
 }
 .star-row:hover,
-.star-row:focus-within,
+.star-row:focus-within { background: var(--inspo-card); }
 .star-row-glyph { display: grid; height: 28px; place-items: center; }
 .star-row-title a,
 .star-row-title span { color: var(--cream); font: 400 22px/1.25 var(--inspo-serif); text-decoration: none; transition: color .2s ease; }
