@@ -168,11 +168,6 @@ export function clusterTargets(clusters, focusId, byCluster) {
   return targets
 }
 
-// The cluster holding the newest star — the map opens centred on it.
-export function mostRecentClusterId(stars) {
-  const newest = [...stars].sort(compareBySaved).at(-1)
-  return newest?.cluster ?? null
-}
 
 export function clusterMode(clusterId, focusId) {
   if (!focusId) return 'normal'
@@ -198,12 +193,6 @@ export function formatSaved(saved) {
   return `${date.toLocaleString('en-US', { month: 'short' }).toLowerCase()} ${date.getDate()}`
 }
 
-export function isNewThisWeek(saved, now = new Date()) {
-  const date = parseSaved(saved)
-  if (!date) return false
-  const age = now.getTime() - date.getTime()
-  return age >= 0 && age < 7 * 24 * 60 * 60 * 1000
-}
 
 export const SORTS = [
   { id: 'newest', label: 'newest' },

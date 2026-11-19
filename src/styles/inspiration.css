@@ -150,7 +150,6 @@
 .star-node-label.mode-normal { opacity: .75; }
 .star-node-label.mode-dim { color: var(--cream); opacity: .35; }
 .star-node-wrap:hover .star-node-label { opacity: 1; }
-.star-node-new { margin-left: 8px; color: var(--inspo-lilac); font: 400 10px var(--inspo-mono); }
 
 .star-map-empty { position: absolute; top: 50%; left: 50%; margin: 0; color: var(--inspo-muted); font: 400 12px var(--inspo-mono); pointer-events: none; transform: translate(-50%, -50%); white-space: nowrap; }
 
@@ -314,6 +313,5 @@ a.polaroid:focus-visible .polaroid-tape { border-color: rgb(180 110 142 / 80%); 
   .star-node-wrap .star-node,
   .star-line,
   .star-cluster-label,
-  .star-node-new,
   .star-selected-glow .star-glyph { animation: none; }
 }

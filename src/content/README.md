@@ -37,7 +37,7 @@ inspiration/
 | field         | required | notes |
 |---------------|----------|-------|
 | `title`       | yes      | |
-| `saved`       | yes      | `YYYY-MM-DD`. Sets the draw-in order, the "newest" sort, the "new this week" tag, and which constellation the map opens on. |
+| `saved`       | yes      | `YYYY-MM-DD`. Sets the draw-in order and the "newest" sort. |
 | `subtitle`    |          | author / role / domain / runtime |
 | `why`         |          | one line |
 | `description` |          | shown in the popup |

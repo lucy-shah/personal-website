@@ -3,7 +3,7 @@ import StarList from '../components/inspiration/StarList.jsx'
 import StarMap from '../components/inspiration/StarMap.jsx'
 import TalentedPeople from '../components/inspiration/TalentedPeople.jsx'
 import { clusters, stars, talentedPeople } from '../data/inspiration.js'
-import { SORTS, buildConstellation, mostRecentClusterId } from '../lib/constellation.js'
+import { SORTS, buildConstellation } from '../lib/constellation.js'
 import '../styles/inspiration.css'
 
 const prefersList = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
@@ -11,8 +11,8 @@ const prefersList = () => typeof window !== 'undefined' && window.matchMedia('(m
 function Inspiration() {
   const constellation = useMemo(() => buildConstellation(clusters, stars), [])
   const [view, setView] = useState(() => (prefersList() ? 'list' : 'map'))
-  // Opens centred on whichever constellation was updated most recently.
-  const [focusId, setFocusId] = useState(() => mostRecentClusterId(stars))
+  // Opens on the Everything view; chips / constellation names centre one.
+  const [focusId, setFocusId] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
   const [sort, setSort] = useState('newest')
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { STAGE, clusterMode, clusterTargets, isNewThisWeek, toStagePoint } from '../../lib/constellation.js'
+import { STAGE, clusterMode, clusterTargets, toStagePoint } from '../../lib/constellation.js'
 import { StarPopup } from './StarCards.jsx'
 import useTweenedLayout from './useTweenedLayout.js'
 
@@ -374,7 +374,6 @@ function StarMap({ clusters, constellation, focusId, selectedId, onSelect, onFoc
                   style={{ '--label-gap': `${glyphSize / 2 + 6}px`, fontSize: labelSize }}
                 >
                   {star.title}
-                  {mode === 'normal' && isNewThisWeek(star.saved) && <span className="star-node-new">← new this week</span>}
                 </span>
               </div>
             )
