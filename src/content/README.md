@@ -18,7 +18,7 @@ One JSON file per star, in the folder for its constellation:
 ```
 inspiration/
   reading/    people/     websites/
-  videos/     music/      quotes/
+  listening-watching/     quotes/
 ```
 
 `inspiration/reading/a-book-that-rewired-my-brain.json` (books, journals, essays…):
@@ -41,6 +41,7 @@ inspiration/
 | `subtitle`    |          | author / role / domain / runtime |
 | `why`         |          | one line |
 | `description` |          | shown in the popup |
+| `kind`        |          | label on the card, e.g. `Video`, `Podcast`, `Song`. Defaults to the category's (use it in `listening-watching/`) |
 | `link`        |          | adds a "Visit →" / "Read more →" link |
 | `offset`      |          | `{ "x": 10, "y": -6 }` to nudge a star from its automatic spot |
 
@@ -59,7 +60,7 @@ inspiration/
 
 - **The file name is the star's id.**
 - **Image:** put an image with the same name next to it, e.g. `a-book-that-rewired-my-brain.jpg` (jpg / png / webp / gif / avif). It shows at the top of the popup.
-- **Placement is automatic.** Each new star joins the outer edge of its constellation and links to the nearest existing star, so the shape grows on its own and older stars never move. Constellations shrink to fit as they get big, so they never collide.
+- **Placement is automatic.** Each category fills real constellations, star by star, oldest item first (the lists are the `constellations` on each cluster in `src/data/inspiration.js`; the shapes live in `src/lib/skyCatalog.js`). When one is full, the next starts beside it, so older stars never move. Constellation names aren't shown on the map. Groups shrink to fit as they grow, so they never collide.
 - Files starting with `_` are ignored. Use them for drafts (e.g. `_draft-idea.json`).
 
 ## Talented people (the polaroids)

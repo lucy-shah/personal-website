@@ -1,5 +1,6 @@
 {
   "title": "3Blue1Brown",
+  "kind": "Video",
   "subtitle": "Videos animating math",
   "why": "breaks down difficult math concepts in a visually appealing and easy to understand way",
   "description": "videos cover a variety of topics in math, or adjacent fields like physics and CS, all with an emphasis on visualizing the core ideas. The goal is to use animation to help elucidate and motivate otherwise tricky topics, and for difficult problems to be made simple with changes in perspective",

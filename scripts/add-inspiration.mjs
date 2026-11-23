@@ -73,6 +73,7 @@ async function addQuote() {
 async function addStar(cluster) {
   const title = await ask('Title')
   if (!title) throw new Error('A title is required.')
+  const kind = cluster === 'listening-watching' ? await ask('Type (Video / Podcast / Song / Album…)') : ''
   const subtitle = await ask('Subtitle (author / role / site / runtime)')
   const why = await ask('Why it inspires you (one line)')
   const description = await ask('Longer description for the popup')
@@ -81,6 +82,7 @@ async function addStar(cluster) {
 
   write(path.join(starsDir, cluster), slugify(title), compact({
     title,
+    kind,
     subtitle,
     why,
     description,

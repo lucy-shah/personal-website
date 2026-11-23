@@ -3,7 +3,7 @@ import { formatSaved } from '../../lib/constellation.js'
 
 function metaLine(star, cluster) {
   const saved = formatSaved(star.saved)
-  return [cluster.kind.toUpperCase(), saved && `saved ${saved}`].filter(Boolean).join(' · ')
+  return [(star.kind ?? cluster.kind).toUpperCase(), saved && `saved ${saved}`].filter(Boolean).join(' · ')
 }
 
 const stripQuotes = (text) => text.replace(/^[“"]+|[”"]+$/g, '').trim()

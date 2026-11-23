@@ -1,11 +1,11 @@
 // Pure helpers that turn the inspiration data into a drawable star map.
 // Nothing here touches React or the DOM.
 
+import { skyShape } from './skyCatalog.js'
+
 export const STAGE = { width: 1200, height: 640 }
 
 const STAR_SIZE = 13
-const GOLDEN_ANGLE = 2.39996
-const MIN_STAR_GAP = 46
 const FOCUS_TARGET = { x: 600, y: 350, s: 1.3 }
 const DIM_SCALE = 0.6
 // Where the other clusters drift when one is focused (in cluster order).
@@ -13,76 +13,61 @@ const PERIPHERY_SLOTS = [
   { x: 190, y: 110 },
   { x: 1010, y: 110 },
   { x: 190, y: 500 },
-  { x: 600, y: 580 },
   { x: 1010, y: 500 },
 ]
-
-function hashString(value) {
-  let hash = 2166136261
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index)
-    hash = Math.imul(hash, 16777619)
-  }
-  return hash >>> 0
-}
 
 function compareBySaved(a, b) {
   return (a.saved ?? '').localeCompare(b.saved ?? '') || a.id.localeCompare(b.id)
 }
 
-// Rough width of a focus-mode label (13px Fira at the 1.3× focus scale), in local units.
-const labelWidth = (title) => (title.length * 6.4 + 24) / 1.3
+// Where each constellation in a category sits relative to the first one.
+// Two columns, growing downward; the second column is nudged so it doesn't read as a grid.
+const CELL = { x: 280, y: 250 }
+const slotOffset = (slot) => ({ x: (slot % 2) * CELL.x, y: Math.floor(slot / 2) * CELL.y + (slot % 2) * 50 })
 
-function isClear(candidate, star, other) {
-  const dx = candidate.lx - other.lx
-  const dy = candidate.ly - other.ly
-  if (Math.hypot(dx, dy * 2.2) < MIN_STAR_GAP) return false
-  if (Math.abs(dy) >= 16) return true
-  // Same row: the left star's label must end before the right star starts.
-  const leftTitle = dx > 0 ? other.title : star.title
-  return Math.abs(dx) >= labelWidth(leftTitle)
-}
-
-// Positions are local to the cluster centre. The oldest star sits in the middle
-// and every newer one spirals outward, so adding a star never reshuffles the rest.
-function placeClusterStars(clusterId, clusterStars) {
-  const seedAngle = (hashString(clusterId) % 360) * (Math.PI / 180)
+// Each category fills real constellations in order (see src/lib/skyCatalog.js):
+// the oldest item lights the first star, each newer one the next star in the
+// figure. When a constellation is full the next one starts beside it, so adding
+// an item never moves the stars already there. If the whole list fills up it
+// starts over, mirrored, so repeats don't look identical.
+function placeClusterStars(cluster, clusterStars) {
+  const names = cluster.constellations?.length ? cluster.constellations : ['cassiopeia']
   const placed = []
-  // Walk outward along a golden-angle spiral until the spot is clear of the
-  // existing stars. Vertical gaps count double so focus-mode labels don't collide.
-  let cursor = 0
-  ;[...clusterStars].sort(compareBySaved).forEach((star) => {
-    const jitter = hashString(star.id)
-    let candidate
-    for (let attempt = 0; attempt < 240; attempt += 1, cursor += 0.35) {
-      const radius = cursor === 0 ? 0 : 38 * Math.sqrt(cursor) + (jitter % 10)
-      const angle = cursor * GOLDEN_ANGLE + seedAngle + ((jitter >> 8) % 40) / 100
-      candidate = { lx: radius * Math.cos(angle) * 1.3, ly: radius * Math.sin(angle) * 0.85 }
-      const clear = placed.every((other) => isClear(candidate, star, other))
-      if (clear) break
-    }
-    cursor += 1
-    placed.push({
-      ...star,
-      lx: candidate.lx + (star.offset?.x ?? 0),
-      ly: candidate.ly + (star.offset?.y ?? 0),
-      size: STAR_SIZE,
-    })
-  })
-
-  // Each star links to its nearest older neighbour → a tree-shaped constellation.
   const lines = []
-  for (let index = 1; index < placed.length; index += 1) {
-    let nearest = 0
-    let nearestDistance = Infinity
-    for (let other = 0; other < index; other += 1) {
-      const distance = Math.hypot(placed[index].lx - placed[other].lx, placed[index].ly - placed[other].ly)
-      if (distance < nearestDistance) {
-        nearestDistance = distance
-        nearest = other
-      }
-    }
-    lines.push([placed[nearest].id, placed[index].id])
+  const ordered = [...clusterStars].sort(compareBySaved)
+  let slot = 0
+  let cursor = 0
+  while (cursor < ordered.length) {
+    const lap = Math.floor(slot / names.length)
+    const shape = skyShape(names[slot % names.length])
+    const mirror = lap % 2 === 1 ? -1 : 1
+    const origin = slotOffset(slot)
+    const ids = []
+    shape.points.forEach((point, index) => {
+      const star = ordered[cursor]
+      if (!star) return
+      cursor += 1
+      ids[index] = star.id
+      placed.push({
+        ...star,
+        lx: origin.x + point.x * mirror + (star.offset?.x ?? 0),
+        ly: origin.y + point.y + (star.offset?.y ?? 0),
+        size: STAR_SIZE,
+      })
+    })
+    shape.edges.forEach(([from, to]) => {
+      if (ids[from] && ids[to]) lines.push([ids[from], ids[to]])
+    })
+    slot += 1
+  }
+
+  // Centre the lit stars on the cluster's spot on the map.
+  if (placed.length) {
+    const xs = placed.map((star) => star.lx)
+    const ys = placed.map((star) => star.ly)
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2
+    const cy = (Math.min(...ys) + Math.max(...ys)) / 2
+    placed.forEach((star) => { star.lx -= cx; star.ly -= cy })
   }
 
   const minY = placed.reduce((lowest, star) => Math.min(lowest, star.ly), 0)
@@ -127,7 +112,7 @@ export function buildConstellation(clusters, stars) {
   const clusterIds = new Set(clusters.map((cluster) => cluster.id))
   const starIds = new Set(stars.map((star) => star.id))
 
-  if (import.meta.env.DEV) {
+  if (import.meta.env?.DEV) {
     stars.forEach((star) => {
       if (!clusterIds.has(star.cluster)) console.warn(`[inspiration] "${star.id}" has unknown cluster "${star.cluster}"`)
     })
@@ -137,7 +122,7 @@ export function buildConstellation(clusters, stars) {
   const byCluster = {}
   const starsById = {}
   clusters.forEach((cluster) => {
-    const layout = placeClusterStars(cluster.id, stars.filter((star) => star.cluster === cluster.id))
+    const layout = placeClusterStars(cluster, stars.filter((star) => star.cluster === cluster.id))
     byCluster[cluster.id] = layout
     layout.stars.forEach((star) => { starsById[star.id] = star })
   })

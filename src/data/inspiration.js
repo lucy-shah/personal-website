@@ -12,13 +12,21 @@
 
 // `home` is where each cluster sits on the 1200 × 640 map in the Everything view.
 // Each id must match a folder name in src/content/inspiration/.
+// `constellations` are the real constellations that category fills, in order —
+// ids from src/lib/skyCatalog.js. Items light them star by star, oldest first.
+// `kind` is the label on each card; an item can override it with its own "kind"
+// (e.g. "Podcast" or "Song" in listening-watching).
 export const clusters = [
-  { id: 'reading', label: 'Reading', kind: 'Reading', color: '#ede6d6', home: { x: 235, y: 190 } },
-  { id: 'people', label: 'People', kind: 'Person', color: '#9db5a6', home: { x: 600, y: 150 } },
-  { id: 'websites', label: 'Websites', kind: 'Website', color: '#c7b9e2', home: { x: 965, y: 190 } },
-  { id: 'videos', label: 'Videos', kind: 'Video', color: '#e9a3c1', home: { x: 300, y: 450 } },
-  { id: 'music', label: 'Music', kind: 'Music', color: '#d9a08a', home: { x: 680, y: 430 } },
-  { id: 'quotes', label: 'Quotes', kind: 'Quote', color: '#aeb3aa', home: { x: 990, y: 490 } },
+  { id: 'reading', label: 'Reading', kind: 'Reading', color: '#ede6d6', home: { x: 235, y: 190 },
+    constellations: ['ursa-major', 'bootes', 'leo'] },
+  { id: 'people', label: 'People', kind: 'Person', color: '#9db5a6', home: { x: 600, y: 150 },
+    constellations: ['orion', 'perseus', 'gemini', 'cassiopeia'] },
+  { id: 'websites', label: 'Websites', kind: 'Website', color: '#c7b9e2', home: { x: 965, y: 190 },
+    constellations: ['pleiades', 'delphinus', 'pegasus', 'andromeda'] },
+  { id: 'listening-watching', label: 'Listening & Watching', kind: 'Media', color: '#e9a3c1', home: { x: 400, y: 455 },
+    constellations: ['lyra', 'cygnus', 'aquila', 'sagittarius', 'taurus', 'scorpius'] },
+  { id: 'quotes', label: 'Quotes', kind: 'Quote', color: '#aeb3aa', home: { x: 820, y: 470 },
+    constellations: ['libra', 'corona-borealis', 'canis-major'] },
 ]
 
 const starFiles = import.meta.glob('../content/inspiration/*/*.json', { eager: true, import: 'default' })
